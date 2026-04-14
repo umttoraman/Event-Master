@@ -1,0 +1,74 @@
+@model EventMaster.Web.Models.PaymentViewModel
+@{
+    ViewData["Title"] = "Ödeme";
+}
+
+<h1 class="mb-4">Ödeme</h1>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Kart bilgileri</h5>
+
+                <form asp-action="ConfirmPayment" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input type="hidden" asp-for="EventId" />
+                    @for (var i = 0; i < Model.RoomSeatIds.Count; i++)
+                    {
+                        <input type="hidden" name="RoomSeatIds[@i]" value="@Model.RoomSeatIds[i]" />
+                    }
+
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CardNumber"></label>
+                        <input class="form-control" asp-for="CardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456" />
+                        <span class="text-danger" asp-validation-for="CardNumber"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="CardOwnerName"></label>
+                        <input class="form-control" asp-for="CardOwnerName" autocomplete="cc-name" placeholder="Ad Soyad" />
+                        <span class="text-danger" asp-validation-for="CardOwnerName"></span>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label" asp-for="ExpireDate"></label>
+                            <input class="form-control" asp-for="ExpireDate" autocomplete="cc-exp" placeholder="08/28" />
+                            <span class="text-danger" asp-validation-for="ExpireDate"></span>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" asp-for="Cvv"></label>
+                            <input class="form-control" asp-for="Cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" />
+                            <span class="text-danger" asp-validation-for="Cvv"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mt-4">
+                        <div>
+                            <div class="small text-muted">Adet</div>
+                            <div class="fw-semibold">@Model.TicketCount</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="small text-muted">Toplam (demo)</div>
+                            <div class="fw-semibold">@Model.TotalPrice</div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mt-3">Onayla ve öde</button>
+                </form>
+            </div>
+        </div>
+        <div class="small text-muted mt-2">
+            Not: Bu sayfa demo ödeme ekranıdır; gerçek kart işlemi yapılmaz.
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
+
