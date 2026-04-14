@@ -8,8 +8,10 @@ public class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _context;
     private readonly Lazy<IRepository<User>> _users;
     private readonly Lazy<IRepository<Room>> _rooms;
+    private readonly Lazy<IRepository<RoomSeat>> _roomSeats;
     private readonly Lazy<IEventRepository> _events;
     private readonly Lazy<IRepository<Ticket>> _tickets;
+    private readonly Lazy<IRepository<EventSeatHold>> _eventSeatHolds;
     private readonly Lazy<IRepository<AuditLog>> _auditLogs;
 
     public UnitOfWork(ApplicationDbContext context)
@@ -17,15 +19,19 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
         _users = new Lazy<IRepository<User>>(() => new Repository<User>(context));
         _rooms = new Lazy<IRepository<Room>>(() => new Repository<Room>(context));
+        _roomSeats = new Lazy<IRepository<RoomSeat>>(() => new Repository<RoomSeat>(context));
         _events = new Lazy<IEventRepository>(() => new EventRepository(context));
         _tickets = new Lazy<IRepository<Ticket>>(() => new Repository<Ticket>(context));
+        _eventSeatHolds = new Lazy<IRepository<EventSeatHold>>(() => new Repository<EventSeatHold>(context));
         _auditLogs = new Lazy<IRepository<AuditLog>>(() => new Repository<AuditLog>(context));
     }
 
     public IRepository<User> Users => _users.Value;
     public IRepository<Room> Rooms => _rooms.Value;
+    public IRepository<RoomSeat> RoomSeats => _roomSeats.Value;
     public IEventRepository Events => _events.Value;
     public IRepository<Ticket> Tickets => _tickets.Value;
+    public IRepository<EventSeatHold> EventSeatHolds => _eventSeatHolds.Value;
     public IRepository<AuditLog> AuditLogs => _auditLogs.Value;
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>

@@ -12,8 +12,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Room> Rooms => Set<Room>();
+    public DbSet<RoomSeat> RoomSeats => Set<RoomSeat>();
     public DbSet<Event> Events => Set<Event>();
     public DbSet<Ticket> Tickets => Set<Ticket>();
+    public DbSet<EventSeatHold> EventSeatHolds => Set<EventSeatHold>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +32,19 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Room>(r =>
         {
             r.Property(x => x.RoomName).HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<RoomSeat>(s =>
+        {
+            s.Property(x => x.Label).HasMaxLength(64);
+            s.Property(x => x.Section).HasMaxLength(64);
+            s.Property(x => x.Row).HasMaxLength(32);
+            s.HasIndex(x => new { x.RoomId, x.Label }).IsUnique();
+
+            s.HasOne(x => x.Room)
+                .WithMany()
+                .HasForeignKey(x => x.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Event>(e =>
@@ -64,6 +79,32 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             t.HasIndex(x => new { x.EventId, x.SeatNumber }).IsUnique();
+        });
+
+        modelBuilder.Entity<EventSeatHold>(h =>
+        {
+            h.Property(x => x.Status).HasConversion<int>();
+            // One active hold per seat/event at a time. Expired/Released/Purchased creates history rows.
+            // Note: Expiration is handled in app logic (marks holds as Expired).
+            h.HasIndex(x => new { x.EventId, x.RoomSeatId })
+                .IsUnique()
+                .HasFilter("\"Status\" = 0");
+            h.HasIndex(x => x.ExpiresAtUtc);
+
+            h.HasOne(x => x.Event)
+                .WithMany()
+                .HasForeignKey(x => x.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            h.HasOne(x => x.RoomSeat)
+                .WithMany()
+                .HasForeignKey(x => x.RoomSeatId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            h.HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<AuditLog>(a =>

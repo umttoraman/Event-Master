@@ -20,3 +20,73 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.seat-picker--busy {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+
+.seat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,.15);
+  font-size: 12px;
+  line-height: 1;
+  background: #fff;
+  color: #212529;
+}
+
+.seat--available {
+  background: #fff;
+}
+
+.seat--held {
+  background: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.seat--sold {
+  background: #f8d7da;
+  border-color: #f5c2c7;
+  text-decoration: line-through;
+}
+
+.seat--blocked {
+  background: #e2e3e5;
+  border-color: #d3d6d8;
+  color: #6c757d;
+}
+
+.seat--selected {
+  outline: 2px solid #0d6efd;
+  outline-offset: 1px;
+}
+
+.seat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.seat-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seat-legend .seat {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 4px;
+}

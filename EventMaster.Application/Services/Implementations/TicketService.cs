@@ -52,11 +52,41 @@ public class TicketService : ITicketService
         if (room is null)
             return Result<Guid>.Fail("Oda bulunamadı.");
 
+        if (request.RoomSeatId == Guid.Empty)
+            return Result<Guid>.Fail("Koltuk seçiniz.");
+
+        // Validate seat belongs to the event room and is active.
+        var seat = await _u.RoomSeats.GetByIdAsync(request.RoomSeatId, cancellationToken);
+        if (seat is null || seat.RoomId != ev.RoomId || !seat.IsActive)
+            return Result<Guid>.Fail("Koltuk geçersiz.");
+
+        // Expire holds for this event (best-effort, keeps unique Active hold constraint workable).
+        var now = DateTime.UtcNow;
+        var expired = await _u.EventSeatHolds.FindAsync(
+            x => x.EventId == ev.Id && x.Status == SeatHoldStatus.Active && x.ExpiresAtUtc <= now,
+            cancellationToken);
+        foreach (var h in expired)
+        {
+            h.Status = SeatHoldStatus.Expired;
+            await _u.EventSeatHolds.UpdateAsync(h, cancellationToken);
+        }
+        if (expired.Count > 0)
+            await _u.SaveChangesAsync(cancellationToken);
+
+        // Seat cannot be held by someone else at purchase time.
+        var activeHold = (await _u.EventSeatHolds.FindAsync(
+                x => x.EventId == ev.Id && x.RoomSeatId == seat.Id && x.Status == SeatHoldStatus.Active,
+                cancellationToken))
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .FirstOrDefault();
+        if (activeHold is not null && activeHold.UserId != buyerId)
+            return Result<Guid>.Fail("Bu koltuk başka bir kullanıcı tarafından tutulmuş.");
+
         var seatTaken = await _u.Tickets.AnyAsync(
-            t => t.EventId == ev.Id && t.SeatNumber == request.SeatNumber.Trim(),
+            t => t.EventId == ev.Id && t.SeatNumber == seat.Label,
             cancellationToken);
         if (seatTaken)
-            return Result<Guid>.Fail("Bu koltuk numarası dolu.");
+            return Result<Guid>.Fail("Bu koltuk dolu.");
 
         var sold = await _u.Tickets.CountAsync(t => t.EventId == ev.Id, cancellationToken);
         if (sold >= room.Capacity)
@@ -67,13 +97,20 @@ public class TicketService : ITicketService
             Id = Guid.NewGuid(),
             EventId = ev.Id,
             UserId = buyerId,
-            SeatNumber = request.SeatNumber.Trim(),
+            SeatNumber = seat.Label,
             // Price is server-controlled; never trust client input.
             Price = TicketPrice,
             PurchaseDate = DateTime.UtcNow
         };
 
         await _u.Tickets.AddAsync(ticket, cancellationToken);
+
+        // Mark hold as Purchased (if present) for history.
+        if (activeHold is not null && activeHold.UserId == buyerId)
+        {
+            activeHold.Status = SeatHoldStatus.Purchased;
+            await _u.EventSeatHolds.UpdateAsync(activeHold, cancellationToken);
+        }
 
         await _u.AuditLogs.AddAsync(new AuditLog
         {

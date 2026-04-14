@@ -24,14 +24,29 @@ else
                 }
             </select>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Koltuk numarası</label>
-            <input class="form-control" asp-for="SeatNumber" placeholder="örn. A12" />
+        <input type="hidden" asp-for="RoomSeatId" />
+        <div class="mb-2">
+            <div class="d-flex align-items-center justify-content-between">
+                <label class="form-label mb-0">Koltuk seç</label>
+                <div class="small text-muted">Seçili: <span id="selectedSeatLabel">—</span></div>
+            </div>
         </div>
+        <div class="seat-legend mb-2 small">
+            <span class="seat-legend-item"><span class="seat seat--available"></span> Müsait</span>
+            <span class="seat-legend-item"><span class="seat seat--held"></span> Tuttuğun</span>
+            <span class="seat-legend-item"><span class="seat seat--sold"></span> Dolu</span>
+            <span class="seat-legend-item"><span class="seat seat--blocked"></span> Başkası tutmuş</span>
+        </div>
+        <div id="seatPicker" class="seat-picker mb-3" data-seat-picker="1"></div>
         <div class="mb-3">
             <label class="form-label">Fiyat (demo)</label>
             <input class="form-control" value="100" readonly />
         </div>
         <button type="submit" class="btn btn-primary">Satın al</button>
     </form>
+
+    @section Scripts
+    {
+        <script src="~/js/seat-picker.js" asp-append-version="true"></script>
+    }
 }

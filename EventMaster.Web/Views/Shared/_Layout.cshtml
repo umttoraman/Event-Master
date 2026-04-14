@@ -25,6 +25,7 @@
                             <li class="nav-item"><a class="nav-link" asp-controller="Ticket" asp-action="Purchase">Bilet Al</a></li>
                             @if (User.IsInRole("Admin"))
                             {
+                                <li class="nav-item"><a class="nav-link" asp-controller="RoomSeat" asp-action="Index">Koltuk Düzeni</a></li>
                                 <li class="nav-item"><a class="nav-link" asp-controller="Ticket" asp-action="Report">Finans Raporu</a></li>
                                 <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="AuditLogs">Denetim Kayıtları</a></li>
                             }

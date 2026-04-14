@@ -13,6 +13,10 @@
                 <th>Kapasite</th>
                 <th>Müsait</th>
                 <th>Yaklaşan etkinlik (onaylı/bekleyen)</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -32,6 +36,12 @@
                     }
                 </td>
                 <td>@r.UpcomingEventsCount</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary" asp-controller="RoomSeat" asp-action="Index" asp-route-roomId="@r.Id">Koltuklar</a>
+                    </td>
+                }
             </tr>
         }
         </tbody>
