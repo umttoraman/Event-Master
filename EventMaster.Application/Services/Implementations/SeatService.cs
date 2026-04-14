@@ -10,6 +10,7 @@ public class SeatService : ISeatService
 {
     private readonly IUnitOfWork _u;
     private static readonly TimeSpan HoldDuration = TimeSpan.FromMinutes(10);
+    private const int FixedSeatsPerRow = 10;
 
     public SeatService(IUnitOfWork unitOfWork)
     {
@@ -37,8 +38,11 @@ public class SeatService : ISeatService
         if (!isAdmin)
             return Result<int>.Fail("Sadece admin koltuk düzeni oluşturabilir.");
 
-        if (request.Rows <= 0 || request.SeatsPerRow <= 0)
-            return Result<int>.Fail("Satır ve koltuk sayısı 0'dan büyük olmalıdır.");
+        // Enforce business rule: each row has fixed number of seats.
+        request.SeatsPerRow = FixedSeatsPerRow;
+
+        if (request.Rows <= 0)
+            return Result<int>.Fail("Satır sayısı 0'dan büyük olmalıdır.");
 
         var room = await _u.Rooms.GetByIdAsync(request.RoomId, cancellationToken);
         if (room is null)
@@ -80,7 +84,7 @@ public class SeatService : ISeatService
             Action = "RoomSeats.Generated",
             EntityType = nameof(Room),
             EntityId = request.RoomId.ToString(),
-            Details = $"Rows={request.Rows}, SeatsPerRow={request.SeatsPerRow}, Section={request.Section ?? ""}, Replace={request.ReplaceExisting}",
+            Details = $"Rows={request.Rows}, SeatsPerRow={request.SeatsPerRow} (fixed), Section={request.Section ?? ""}, Replace={request.ReplaceExisting}",
             CreatedAtUtc = DateTime.UtcNow
         }, cancellationToken);
 

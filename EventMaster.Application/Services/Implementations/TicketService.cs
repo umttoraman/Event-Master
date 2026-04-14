@@ -39,26 +39,30 @@ public class TicketService : ITicketService
         };
     }
 
-    public async Task<Result<Guid>> PurchaseAsync(PurchaseTicketRequest request, Guid buyerId, CancellationToken cancellationToken = default)
+    public async Task<Result<PurchaseTicketsResultDto>> PurchaseAsync(PurchaseTicketRequest request, Guid buyerId, CancellationToken cancellationToken = default)
     {
         var ev = await _u.Events.GetWithDetailsByIdAsync(request.EventId, cancellationToken);
         if (ev is null)
-            return Result<Guid>.Fail("Etkinlik bulunamadı.");
+            return Result<PurchaseTicketsResultDto>.Fail("Etkinlik bulunamadı.");
 
         if (ev.Status != EventStatus.Approved)
-            return Result<Guid>.Fail("Sadece onaylanmış etkinliklere bilet alınabilir.");
+            return Result<PurchaseTicketsResultDto>.Fail("Sadece onaylanmış etkinliklere bilet alınabilir.");
 
         var room = ev.Room ?? await _u.Rooms.GetByIdAsync(ev.RoomId, cancellationToken);
         if (room is null)
-            return Result<Guid>.Fail("Oda bulunamadı.");
+            return Result<PurchaseTicketsResultDto>.Fail("Oda bulunamadı.");
 
-        if (request.RoomSeatId == Guid.Empty)
-            return Result<Guid>.Fail("Koltuk seçiniz.");
+        var seatIds = (request.RoomSeatIds ?? new List<Guid>())
+            .Where(x => x != Guid.Empty)
+            .Distinct()
+            .ToList();
+        if (seatIds.Count == 0)
+            return Result<PurchaseTicketsResultDto>.Fail("En az 1 koltuk seçiniz.");
 
-        // Validate seat belongs to the event room and is active.
-        var seat = await _u.RoomSeats.GetByIdAsync(request.RoomSeatId, cancellationToken);
-        if (seat is null || seat.RoomId != ev.RoomId || !seat.IsActive)
-            return Result<Guid>.Fail("Koltuk geçersiz.");
+        // Capacity check
+        var soldAlready = await _u.Tickets.CountAsync(t => t.EventId == ev.Id, cancellationToken);
+        if (soldAlready + seatIds.Count > room.Capacity)
+            return Result<PurchaseTicketsResultDto>.Fail("Oda kapasitesi aşılıyor.");
 
         // Expire holds for this event (best-effort, keeps unique Active hold constraint workable).
         var now = DateTime.UtcNow;
@@ -73,43 +77,62 @@ public class TicketService : ITicketService
         if (expired.Count > 0)
             await _u.SaveChangesAsync(cancellationToken);
 
-        // Seat cannot be held by someone else at purchase time.
-        var activeHold = (await _u.EventSeatHolds.FindAsync(
-                x => x.EventId == ev.Id && x.RoomSeatId == seat.Id && x.Status == SeatHoldStatus.Active,
-                cancellationToken))
-            .OrderByDescending(x => x.CreatedAtUtc)
-            .FirstOrDefault();
-        if (activeHold is not null && activeHold.UserId != buyerId)
-            return Result<Guid>.Fail("Bu koltuk başka bir kullanıcı tarafından tutulmuş.");
-
-        var seatTaken = await _u.Tickets.AnyAsync(
-            t => t.EventId == ev.Id && t.SeatNumber == seat.Label,
-            cancellationToken);
-        if (seatTaken)
-            return Result<Guid>.Fail("Bu koltuk dolu.");
-
-        var sold = await _u.Tickets.CountAsync(t => t.EventId == ev.Id, cancellationToken);
-        if (sold >= room.Capacity)
-            return Result<Guid>.Fail("Oda kapasitesi doldu.");
-
-        var ticket = new Ticket
+        // Load and validate seats
+        var seats = new List<RoomSeat>();
+        foreach (var id in seatIds)
         {
-            Id = Guid.NewGuid(),
-            EventId = ev.Id,
-            UserId = buyerId,
-            SeatNumber = seat.Label,
-            // Price is server-controlled; never trust client input.
-            Price = TicketPrice,
-            PurchaseDate = DateTime.UtcNow
-        };
+            var s = await _u.RoomSeats.GetByIdAsync(id, cancellationToken);
+            if (s is null || s.RoomId != ev.RoomId || !s.IsActive)
+                return Result<PurchaseTicketsResultDto>.Fail("Koltuk geçersiz.");
+            seats.Add(s);
+        }
 
-        await _u.Tickets.AddAsync(ticket, cancellationToken);
-
-        // Mark hold as Purchased (if present) for history.
-        if (activeHold is not null && activeHold.UserId == buyerId)
+        // Ensure none of selected seats are held by others or already sold
+        foreach (var seat in seats)
         {
-            activeHold.Status = SeatHoldStatus.Purchased;
-            await _u.EventSeatHolds.UpdateAsync(activeHold, cancellationToken);
+            var activeHold = (await _u.EventSeatHolds.FindAsync(
+                    x => x.EventId == ev.Id && x.RoomSeatId == seat.Id && x.Status == SeatHoldStatus.Active,
+                    cancellationToken))
+                .OrderByDescending(x => x.CreatedAtUtc)
+                .FirstOrDefault();
+            if (activeHold is not null && activeHold.UserId != buyerId)
+                return Result<PurchaseTicketsResultDto>.Fail($"Koltuk tutulmuş: {seat.Label}");
+
+            var seatTaken = await _u.Tickets.AnyAsync(
+                t => t.EventId == ev.Id && t.SeatNumber == seat.Label,
+                cancellationToken);
+            if (seatTaken)
+                return Result<PurchaseTicketsResultDto>.Fail($"Koltuk dolu: {seat.Label}");
+        }
+
+        var ticketIds = new List<Guid>(seats.Count);
+        foreach (var seat in seats)
+        {
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket
+            {
+                Id = ticketId,
+                EventId = ev.Id,
+                UserId = buyerId,
+                SeatNumber = seat.Label,
+                // Price is server-controlled; never trust client input.
+                Price = TicketPrice,
+                PurchaseDate = DateTime.UtcNow
+            };
+            await _u.Tickets.AddAsync(ticket, cancellationToken);
+            ticketIds.Add(ticketId);
+
+            // Mark hold as Purchased (if present) for history.
+            var myHold = (await _u.EventSeatHolds.FindAsync(
+                    x => x.EventId == ev.Id && x.RoomSeatId == seat.Id && x.UserId == buyerId && x.Status == SeatHoldStatus.Active,
+                    cancellationToken))
+                .OrderByDescending(x => x.CreatedAtUtc)
+                .FirstOrDefault();
+            if (myHold is not null)
+            {
+                myHold.Status = SeatHoldStatus.Purchased;
+                await _u.EventSeatHolds.UpdateAsync(myHold, cancellationToken);
+            }
         }
 
         await _u.AuditLogs.AddAsync(new AuditLog
@@ -118,16 +141,19 @@ public class TicketService : ITicketService
             UserId = buyerId,
             Action = "Ticket.Purchased",
             EntityType = nameof(Ticket),
-            EntityId = ticket.Id.ToString(),
-            Details = $"Event={ev.Title}, Seat={ticket.SeatNumber}, Price={ticket.Price}",
+            EntityId = ev.Id.ToString(),
+            Details = $"Event={ev.Title}, Seats={string.Join(",", seats.Select(x => x.Label))}, Count={seats.Count}, Total={seats.Count * TicketPrice}",
             CreatedAtUtc = DateTime.UtcNow
         }, cancellationToken);
 
-        var buyer = await _u.Users.GetByIdAsync(buyerId, cancellationToken);
-        await _notify.SendInAppAsync(buyerId, $"Bilet satın alındı: {ev.Title} / Koltuk {ticket.SeatNumber}", cancellationToken);
+        await _notify.SendInAppAsync(buyerId, $"Bilet satın alındı: {ev.Title} / {seats.Count} koltuk", cancellationToken);
 
         await _u.SaveChangesAsync(cancellationToken);
-        return Result<Guid>.Ok(ticket.Id);
+        return Result<PurchaseTicketsResultDto>.Ok(new PurchaseTicketsResultDto
+        {
+            TicketIds = ticketIds,
+            TotalPrice = ticketIds.Count * TicketPrice
+        });
     }
 
     public async Task<IReadOnlyList<TicketDto>> GetFinancialReportAsync(CancellationToken cancellationToken = default)

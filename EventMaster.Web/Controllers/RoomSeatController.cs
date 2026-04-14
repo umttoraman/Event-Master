@@ -35,7 +35,16 @@ public class RoomSeatController : Controller
 
         ViewBag.Seats = seats;
 
-        return View(new GenerateRoomSeatsRequest { RoomId = selectedRoomId });
+        var selectedRoom = rooms.FirstOrDefault(x => x.Id == selectedRoomId);
+        var rows = selectedRoom is null ? 10 : (int)Math.Ceiling(selectedRoom.Capacity / 10m);
+        if (rows <= 0) rows = 1;
+
+        return View(new GenerateRoomSeatsRequest
+        {
+            RoomId = selectedRoomId,
+            Rows = rows,
+            SeatsPerRow = 10
+        });
     }
 
     [HttpPost]

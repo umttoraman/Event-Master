@@ -38,6 +38,7 @@ else
                     <form asp-action="Generate" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="RoomId" value="@selectedRoomId" />
+                        <input type="hidden" asp-for="SeatsPerRow" value="10" />
 
                         <div class="row g-2">
                             <div class="col-6">
@@ -46,7 +47,7 @@ else
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Satır başı</label>
-                                <input class="form-control" asp-for="SeatsPerRow" min="1" />
+                                <input class="form-control" value="10" readonly />
                             </div>
                         </div>
                         <div class="mb-3 mt-2">

@@ -12,7 +12,7 @@
 }
 else
 {
-    <form asp-action="Purchase" method="post" class="col-lg-6">
+    <form asp-action="Checkout" method="post" class="col-lg-6">
         @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="mb-3">
@@ -24,7 +24,7 @@ else
                 }
             </select>
         </div>
-        <input type="hidden" asp-for="RoomSeatId" />
+        <div id="seatHiddenInputs"></div>
         <div class="mb-2">
             <div class="d-flex align-items-center justify-content-between">
                 <label class="form-label mb-0">Koltuk seç</label>
@@ -39,8 +39,8 @@ else
         </div>
         <div id="seatPicker" class="seat-picker mb-3" data-seat-picker="1"></div>
         <div class="mb-3">
-            <label class="form-label">Fiyat (demo)</label>
-            <input class="form-control" value="100" readonly />
+            <label class="form-label">Toplam fiyat (demo)</label>
+            <input id="totalPrice" class="form-control" value="0" readonly />
         </div>
         <button type="submit" class="btn btn-primary">Satın al</button>
     </form>

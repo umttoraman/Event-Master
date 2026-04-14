@@ -2,6 +2,7 @@ using System.Security.Claims;
 using EventMaster.Application.DTOs.Tickets;
 using EventMaster.Application.Services;
 using EventMaster.Domain.Enums;
+using EventMaster.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,18 +38,46 @@ public class TicketController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Purchase(PurchaseTicketRequest model, CancellationToken cancellationToken)
+    public IActionResult Checkout(PurchaseTicketRequest model, CancellationToken cancellationToken)
     {
-        var result = await _tickets.PurchaseAsync(model, CurrentUserId, cancellationToken);
+        // server-side guard (payment page should only open with seats selected)
+        var seatIds = (model.RoomSeatIds ?? new List<Guid>()).Where(x => x != Guid.Empty).Distinct().ToList();
+        if (model.EventId == Guid.Empty || seatIds.Count == 0)
+        {
+            TempData["Error"] = "Ödeme için önce koltuk seçiniz.";
+            return RedirectToAction(nameof(Purchase));
+        }
+
+        var vm = new PaymentViewModel
+        {
+            EventId = model.EventId,
+            RoomSeatIds = seatIds
+        };
+        return View("Payment", vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmPayment(PaymentViewModel model, CancellationToken cancellationToken)
+    {
+        model.RoomSeatIds = (model.RoomSeatIds ?? new List<Guid>()).Where(x => x != Guid.Empty).Distinct().ToList();
+        if (!ModelState.IsValid)
+            return View("Payment", model);
+
+        var purchaseRequest = new PurchaseTicketRequest
+        {
+            EventId = model.EventId,
+            RoomSeatIds = model.RoomSeatIds
+        };
+
+        var result = await _tickets.PurchaseAsync(purchaseRequest, CurrentUserId, cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.Error!);
-            var all = await _events.GetAllAsync(cancellationToken);
-            ViewBag.ApprovedEvents = all.Where(e => e.Status == EventStatus.Approved).ToList();
-            return View(model);
+            return View("Payment", model);
         }
 
-        TempData["Message"] = "Bilet satın alındı.";
+        TempData["Message"] = $"Bilet satın alındı. ({result.Value!.Count} adet) Toplam: {result.Value.TotalPrice}";
         return RedirectToAction(nameof(Purchase));
     }
 
