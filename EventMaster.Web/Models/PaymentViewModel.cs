@@ -31,7 +31,7 @@ public class PaymentViewModel
 
     [Required(ErrorMessage = "CVV zorunludur.")]
     [Display(Name = "CVV")]
-    [RegularExpression(@"^\d{3,4}$", ErrorMessage = "CVV 3-4 haneli olmalıdır.")]
+    [RegularExpression(@"^\d{3}$", ErrorMessage = "CVV 3 haneli olmalıdır.")]
     public string Cvv { get; set; } = string.Empty;
 }
 

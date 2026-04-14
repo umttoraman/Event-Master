@@ -4,5 +4,5 @@ namespace EventMaster.Application.Services;
 
 public interface IDashboardService
 {
-    Task<DashboardStatsDto> GetStatsAsync(CancellationToken cancellationToken = default);
+    Task<DashboardStatsDto> GetStatsAsync(Guid currentUserId, bool isAdmin, bool isOrganizer, CancellationToken cancellationToken = default);
 }

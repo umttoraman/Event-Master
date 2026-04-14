@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using EventMaster.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,13 @@ public class DashboardController : Controller
         _audit = audit;
     }
 
+    private Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private bool IsAdmin => User.IsInRole("Admin");
+    private bool IsOrganizer => User.IsInRole("Organizer");
+
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        var stats = await _dashboard.GetStatsAsync(cancellationToken);
+        var stats = await _dashboard.GetStatsAsync(CurrentUserId, IsAdmin, IsOrganizer, cancellationToken);
         return View(stats);
     }
 

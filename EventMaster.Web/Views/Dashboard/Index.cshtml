@@ -1,12 +1,14 @@
 @model DashboardStatsDto
 @{
     ViewData["Title"] = "Panel";
+    var isAdmin = User.IsInRole("Admin");
+    var isOrganizer = User.IsInRole("Organizer");
 }
 
 <h1 class="mb-4">Gösterge paneli</h1>
 
 <div class="row g-3">
-    <div class="col-md-3">
+    <div class="col-md-6 col-lg-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <div class="text-muted small">Toplam etkinlik</div>
@@ -14,7 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6 col-lg-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <div class="text-muted small">Aktif odalar</div>
@@ -22,20 +24,26 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="text-muted small">Toplam gelir</div>
-                <div class="display-6 fw-bold text-dark">@Model.TotalRevenue.ToString("C")</div>
+    @if (isOrganizer || isAdmin)
+    {
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Toplam gelir</div>
+                    <div class="display-6 fw-bold text-dark">@Model.TotalRevenue.ToString("C")</div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="text-muted small">Onay bekleyen</div>
-                <div class="display-6 fw-bold text-warning">@Model.PendingApprovals</div>
+    }
+    @if (isAdmin)
+    {
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Onay bekleyen</div>
+                    <div class="display-6 fw-bold text-warning">@Model.PendingApprovals</div>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>

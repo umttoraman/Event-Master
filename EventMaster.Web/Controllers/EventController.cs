@@ -23,11 +23,18 @@ public class EventController : Controller
 
     private Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     private bool IsAdmin => User.IsInRole("Admin");
+    private bool IsOrganizer => User.IsInRole("Organizer");
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         var list = await _events.GetAllAsync(cancellationToken);
-        return View(list);
+        if (IsAdmin)
+            return View(list);
+
+        if (IsOrganizer)
+            return View(list.Where(e => e.OrganizerId == CurrentUserId).ToList());
+
+        return View(list.Where(e => e.Status == EventStatus.Approved).ToList());
     }
 
     public async Task<IActionResult> Details(Guid id, CancellationToken cancellationToken)

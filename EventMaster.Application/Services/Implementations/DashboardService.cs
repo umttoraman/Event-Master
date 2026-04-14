@@ -13,18 +13,30 @@ public class DashboardService : IDashboardService
         _u = unitOfWork;
     }
 
-    public async Task<DashboardStatsDto> GetStatsAsync(CancellationToken cancellationToken = default)
+    public async Task<DashboardStatsDto> GetStatsAsync(Guid currentUserId, bool isAdmin, bool isOrganizer, CancellationToken cancellationToken = default)
     {
         var events = await _u.Events.GetAllAsync(cancellationToken);
         var rooms = await _u.Rooms.GetAllAsync(cancellationToken);
         var tickets = await _u.Tickets.GetAllAsync(cancellationToken);
+        var visibleEvents = isAdmin
+            ? events
+            : isOrganizer
+                ? events.Where(e => e.OrganizerId == currentUserId).ToList()
+                : events.Where(e => e.Status == EventStatus.Approved).ToList();
+
+        var eventIds = visibleEvents.Select(e => e.Id).ToHashSet();
+        var visibleRevenue = isAdmin || isOrganizer
+            ? tickets.Where(t => eventIds.Contains(t.EventId)).Sum(t => t.Price)
+            : 0m;
 
         return new DashboardStatsDto
         {
-            TotalEvents = events.Count,
+            TotalEvents = visibleEvents.Count,
             ActiveRooms = rooms.Count(r => r.IsAvailable),
-            TotalRevenue = tickets.Sum(t => t.Price),
-            PendingApprovals = events.Count(e => e.Status == EventStatus.Pending)
+            TotalRevenue = visibleRevenue,
+            PendingApprovals = isAdmin
+                ? events.Count(e => e.Status == EventStatus.Pending)
+                : 0
         };
     }
 }

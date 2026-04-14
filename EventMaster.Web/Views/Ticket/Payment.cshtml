@@ -36,12 +36,24 @@
                     <div class="row g-2">
                         <div class="col-6">
                             <label class="form-label" asp-for="ExpireDate"></label>
-                            <input class="form-control" asp-for="ExpireDate" autocomplete="cc-exp" placeholder="08/28" />
+                            <input class="form-control"
+                                   asp-for="ExpireDate"
+                                   autocomplete="cc-exp"
+                                   inputmode="numeric"
+                                   maxlength="5"
+                                   pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+                                   placeholder="08/28" />
                             <span class="text-danger" asp-validation-for="ExpireDate"></span>
                         </div>
                         <div class="col-6">
                             <label class="form-label" asp-for="Cvv"></label>
-                            <input class="form-control" asp-for="Cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" />
+                            <input class="form-control"
+                                   asp-for="Cvv"
+                                   inputmode="numeric"
+                                   maxlength="3"
+                                   pattern="^\d{3}$"
+                                   autocomplete="cc-csc"
+                                   placeholder="123" />
                             <span class="text-danger" asp-validation-for="Cvv"></span>
                         </div>
                     </div>
@@ -70,5 +82,28 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const expireInput = document.getElementById("ExpireDate");
+            const cvvInput = document.getElementById("Cvv");
+
+            if (expireInput) {
+                expireInput.addEventListener("input", function () {
+                    const digits = this.value.replace(/\D/g, "").slice(0, 4);
+                    if (digits.length >= 3) {
+                        this.value = digits.slice(0, 2) + "/" + digits.slice(2);
+                    } else {
+                        this.value = digits;
+                    }
+                });
+            }
+
+            if (cvvInput) {
+                cvvInput.addEventListener("input", function () {
+                    this.value = this.value.replace(/\D/g, "").slice(0, 3);
+                });
+            }
+        })();
+    </script>
 }
 
