@@ -1,0 +1,42 @@
+@model EventDto
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+    <div>
+        <h1 class="h3">@Model.Title</h1>
+        <p class="text-muted mb-0">@Model.RoomName · @Model.OrganizerName</p>
+    </div>
+    <span class="badge bg-info text-dark fs-6">@Model.Status</span>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">Başlangıç</dt>
+            <dd class="col-sm-9">@Model.StartTime.ToLocalTime().ToString("dd/MM/yyyy HH.mm")</dd>
+            <dt class="col-sm-3">Bitiş</dt>
+            <dd class="col-sm-9">@Model.EndTime.ToLocalTime().ToString("dd/MM/yyyy HH.mm")</dd>
+            <dt class="col-sm-3">Satılan bilet</dt>
+            <dd class="col-sm-9">@Model.TicketsSold</dd>
+        </dl>
+    </div>
+    <div class="col-md-4">
+        @if (!string.IsNullOrEmpty(Model.PosterFileName))
+        {
+            <div class="card border-0 shadow-sm">
+                <img class="card-img-top" src="~/@Model.PosterFileName" alt="Afiş" />
+                <div class="card-body small text-muted">Afiş dosyası</div>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted small">Afiş yüklenmemiş.</div>
+        }
+    </div>
+</div>
+
+<p class="mt-4">
+    <a class="btn btn-outline-secondary" asp-action="Index">Listeye dön</a>
+</p>

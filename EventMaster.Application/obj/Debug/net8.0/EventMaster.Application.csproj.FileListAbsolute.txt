@@ -1,0 +1,15 @@
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\bin\Debug\net8.0\EventMaster.Application.deps.json
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\bin\Debug\net8.0\EventMaster.Application.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\bin\Debug\net8.0\EventMaster.Application.pdb
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\bin\Debug\net8.0\EventMaster.Domain.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\bin\Debug\net8.0\EventMaster.Domain.pdb
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.csproj.AssemblyReference.cache
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.AssemblyInfoInputs.cache
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.AssemblyInfo.cs
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.csproj.CoreCompileInputs.cache
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMas.C1DC6EDD.Up2Date
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\refint\EventMaster.Application.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.pdb
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\ref\EventMaster.Application.dll

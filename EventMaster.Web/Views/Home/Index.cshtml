@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="row align-items-center py-5">
+    <div class="col-lg-7">
+        <h1 class="display-5 fw-bold text-primary">Event &amp; Konferans Odası Rezervasyonu</h1>
+        <p class="lead text-secondary mt-3">
+            Event Master, etkinlik yaşam döngüsü, oda çakışma kontrolü ve bilet satışı için örnek kurumsal bir ASP.NET Core MVC uygulamasıdır.
+        </p>
+        @if (User.Identity?.IsAuthenticated != true)
+        {
+            <div class="d-flex gap-2 mt-4">
+                <a class="btn btn-primary btn-lg" asp-controller="Auth" asp-action="Login">Giriş</a>
+                <a class="btn btn-outline-primary btn-lg" asp-controller="Auth" asp-action="Register">Kayıt (Müşteri)</a>
+            </div>
+            <p class="small text-muted mt-3">Demo hesaplar: <code>admin</code> / <code>Admin123!</code>, <code>organizer</code> / <code>Org123!</code>, <code>customer</code> / <code>Cust123!</code></p>
+        }
+        else
+        {
+            <a class="btn btn-primary btn-lg mt-3" asp-controller="Dashboard" asp-action="Index">Panele git</a>
+        }
+    </div>
+    <div class="col-lg-5 mt-4 mt-lg-0">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Özellikler</h5>
+                <ul class="list-unstyled mb-0 small">
+                    <li class="mb-2">RBAC (Admin / Organizer / Customer)</li>
+                    <li class="mb-2">Onay akışı (Taslak → Bekliyor → Onaylı)</li>
+                    <li class="mb-2">Oda zaman çakışması önleme</li>
+                    <li class="mb-2">Bilet ve gelir takibi</li>
+                    <li>Denetim kayıtları ve bildirim mock</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

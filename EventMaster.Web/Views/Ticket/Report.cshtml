@@ -1,0 +1,39 @@
+@model IReadOnlyList<TicketDto>
+@{
+    ViewData["Title"] = "Finans raporu";
+    var total = (decimal)ViewBag.TotalRevenue!;
+}
+
+<h1 class="mb-4">Finans raporu</h1>
+
+<div class="alert alert-light border mb-3">
+    <strong>Toplam gelir:</strong> @total.ToString("C")
+</div>
+
+<div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Tarih</th>
+                <th>Etkinlik</th>
+                <th>Alıcı</th>
+                <th>Koltuk</th>
+                <th>Tutar</th>
+                <th>PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td class="text-nowrap small">@t.PurchaseDate.ToLocalTime().ToString("dd/MM/yyyy HH.mm")</td>
+                <td>@t.EventTitle</td>
+                <td>@t.BuyerName</td>
+                <td>@t.SeatNumber</td>
+                <td>@t.Price.ToString("C")</td>
+                <td><a class="btn btn-sm btn-outline-primary" asp-action="DownloadPdf" asp-route-id="@t.Id">İndir</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

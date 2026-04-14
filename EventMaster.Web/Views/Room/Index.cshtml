@@ -1,0 +1,39 @@
+@model IReadOnlyList<RoomDto>
+@{
+    ViewData["Title"] = "Odalar";
+}
+
+<h1 class="mb-4">Oda durumu</h1>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Oda</th>
+                <th>Kapasite</th>
+                <th>Müsait</th>
+                <th>Yaklaşan etkinlik (onaylı/bekleyen)</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td class="fw-semibold">@r.RoomName</td>
+                <td>@r.Capacity</td>
+                <td>
+                    @if (r.IsAvailable)
+                    {
+                        <span class="badge bg-success">Evet</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Hayır</span>
+                    }
+                </td>
+                <td>@r.UpcomingEventsCount</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,54 @@
+@model CreateUpdateEventRequest
+@{
+    ViewData["Title"] = "Etkinlik düzenle";
+    var rooms = (IReadOnlyList<RoomDto>)ViewBag.Rooms!;
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
+    var eventId = (Guid)ViewBag.EventId!;
+}
+
+<h1 class="mb-4">Etkinlik düzenle</h1>
+
+<form asp-action="Edit" asp-route-id="@eventId" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-8">
+            <label class="form-label">Başlık</label>
+            <input class="form-control" asp-for="Title" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Oda</label>
+            <select class="form-select" asp-for="RoomId">
+                @foreach (var r in rooms)
+                {
+                    <option value="@r.Id">@r.RoomName (kapasite @r.Capacity)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Başlangıç</label>
+            <input class="form-control" asp-for="StartTime" type="datetime-local" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Bitiş</label>
+            <input class="form-control" asp-for="EndTime" type="datetime-local" />
+        </div>
+        @if (isAdmin)
+        {
+            <div class="col-md-6">
+                <label class="form-label">Durum (Admin)</label>
+                <select class="form-select" asp-for="Status" asp-items="Html.GetEnumSelectList<EventStatus>()"></select>
+            </div>
+        }
+        <div class="col-12">
+            <label class="form-label">Afiş (isteğe bağlı)</label>
+            <input class="form-control" type="file" name="poster" accept="image/*" />
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">İptal</a>
+    </div>
+</form>

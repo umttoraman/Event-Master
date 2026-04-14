@@ -1,0 +1,37 @@
+@model PurchaseTicketRequest
+@{
+    ViewData["Title"] = "Bilet satın al";
+    var evs = (IReadOnlyList<EventDto>)ViewBag.ApprovedEvents!;
+}
+
+<h1 class="mb-4">Bilet satın al</h1>
+
+@if (evs.Count == 0)
+{
+    <div class="alert alert-warning">Onaylı etkinlik yok. Önce bir etkinliğin onaylanması gerekir.</div>
+}
+else
+{
+    <form asp-action="Purchase" method="post" class="col-lg-6">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label class="form-label">Etkinlik</label>
+            <select class="form-select" asp-for="EventId">
+                @foreach (var e in evs)
+                {
+                    <option value="@e.Id">@e.Title — @e.StartTime.ToLocalTime().ToString("dd/MM/yyyy HH.mm")</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Koltuk numarası</label>
+            <input class="form-control" asp-for="SeatNumber" placeholder="örn. A12" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Fiyat (demo)</label>
+            <input class="form-control" value="100" readonly />
+        </div>
+        <button type="submit" class="btn btn-primary">Satın al</button>
+    </form>
+}

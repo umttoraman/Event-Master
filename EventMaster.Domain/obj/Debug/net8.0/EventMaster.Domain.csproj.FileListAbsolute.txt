@@ -1,0 +1,11 @@
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\bin\Debug\net8.0\EventMaster.Domain.deps.json
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\bin\Debug\net8.0\EventMaster.Domain.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\bin\Debug\net8.0\EventMaster.Domain.pdb
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.AssemblyInfoInputs.cache
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.AssemblyInfo.cs
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.csproj.CoreCompileInputs.cache
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\refint\EventMaster.Domain.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.pdb
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\ref\EventMaster.Domain.dll

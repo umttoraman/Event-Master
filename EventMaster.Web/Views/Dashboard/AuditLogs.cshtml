@@ -1,0 +1,32 @@
+@model IReadOnlyList<AuditLogDto>
+@{
+    ViewData["Title"] = "Denetim kayıtları";
+}
+
+<h1 class="mb-4">Denetim kayıtları</h1>
+
+<div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Zaman (UTC)</th>
+                <th>Kullanıcı</th>
+                <th>İşlem</th>
+                <th>Varlık</th>
+                <th>Detay</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var l in Model)
+        {
+            <tr>
+                <td class="text-nowrap small">@l.CreatedAtUtc.ToString("u")</td>
+                <td>@(l.UserName ?? "—")</td>
+                <td><code>@l.Action</code></td>
+                <td>@l.EntityType @l.EntityId</td>
+                <td class="small">@l.Details</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
