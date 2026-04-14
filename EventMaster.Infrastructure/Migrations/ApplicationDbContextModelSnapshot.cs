@@ -99,6 +99,48 @@ namespace EventMaster.Infrastructure.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("EventMaster.Domain.Entities.EventSeatHold", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ReleasedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RoomSeatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAtUtc");
+
+                    b.HasIndex("RoomSeatId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("EventId", "RoomSeatId")
+                        .IsUnique()
+                        .HasFilter("\"Status\" = 0");
+
+                    b.ToTable("EventSeatHolds");
+                });
+
             modelBuilder.Entity("EventMaster.Domain.Entities.Room", b =>
                 {
                     b.Property<Guid>("Id")
@@ -119,6 +161,42 @@ namespace EventMaster.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("EventMaster.Domain.Entities.RoomSeat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Row")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Section")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId", "Label")
+                        .IsUnique();
+
+                    b.ToTable("RoomSeats");
                 });
 
             modelBuilder.Entity("EventMaster.Domain.Entities.Ticket", b =>
@@ -210,6 +288,44 @@ namespace EventMaster.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Organizer");
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("EventMaster.Domain.Entities.EventSeatHold", b =>
+                {
+                    b.HasOne("EventMaster.Domain.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventMaster.Domain.Entities.RoomSeat", "RoomSeat")
+                        .WithMany()
+                        .HasForeignKey("RoomSeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventMaster.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("RoomSeat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EventMaster.Domain.Entities.RoomSeat", b =>
+                {
+                    b.HasOne("EventMaster.Domain.Entities.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Room");
                 });

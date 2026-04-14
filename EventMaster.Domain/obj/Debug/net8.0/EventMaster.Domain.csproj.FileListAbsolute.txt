@@ -9,3 +9,4 @@ C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\refint\EventMaster.Domain.dll
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.pdb
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\ref\EventMaster.Domain.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Domain\obj\Debug\net8.0\EventMaster.Domain.sourcelink.json

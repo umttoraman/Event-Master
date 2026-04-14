@@ -148,14 +148,14 @@
         }
       }
     },
-    "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj": {
+    "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
+        "projectUniqueName": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
         "projectName": "EventMaster.Infrastructure",
-        "projectPath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
+        "projectPath": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\alium\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\obj\\",
+        "outputPath": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -265,8 +265,8 @@
               "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Application\\EventMaster.Application.csproj": {
                 "projectPath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Application\\EventMaster.Application.csproj"
               },
-              "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj"
+              "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj": {
+                "projectPath": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj"
               }
             }
           }

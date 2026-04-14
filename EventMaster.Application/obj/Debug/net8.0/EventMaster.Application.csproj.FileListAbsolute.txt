@@ -13,3 +13,4 @@ C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\ne
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\refint\EventMaster.Application.dll
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.pdb
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\ref\EventMaster.Application.dll
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Application\obj\Debug\net8.0\EventMaster.Application.sourcelink.json

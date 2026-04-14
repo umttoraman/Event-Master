@@ -34,3 +34,4 @@ C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Infrastructure\bin\Debug
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Infrastructure\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Infrastructure\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
 C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Infrastructure\bin\Debug\net8.0\LatoFont\OFL.txt
+C:\Users\alium\Desktop\web_ruhi\EventMaster\EventMaster.Infrastructure\obj\Debug\net8.0\EventMaster.Infrastructure.sourcelink.json
