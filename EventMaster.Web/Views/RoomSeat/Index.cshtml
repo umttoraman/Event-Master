@@ -1,0 +1,136 @@
+@model GenerateRoomSeatsRequest
+@{
+    ViewData["Title"] = "Koltuk düzeni";
+    var rooms = (IReadOnlyList<RoomDto>)ViewBag.Rooms!;
+    var selectedRoomId = (Guid)ViewBag.SelectedRoomId!;
+    var seats = (IReadOnlyList<RoomSeatDto>)ViewBag.Seats!;
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="mb-0">Koltuk düzeni</h1>
+</div>
+
+@if (rooms.Count == 0)
+{
+    <div class="alert alert-warning">Önce oda oluşturulmalı.</div>
+}
+else
+{
+    <div class="row g-3">
+        <div class="col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Düzen oluştur</h5>
+                    <form asp-action="Generate" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label">Oda</label>
+                            <select class="form-select" asp-for="RoomId" onchange="this.form.submit()">
+                                @foreach (var r in rooms)
+                                {
+                                    <option value="@r.Id" selected="@(r.Id == selectedRoomId)">@r.RoomName (@r.Capacity)</option>
+                                }
+                            </select>
+                            <div class="form-text">Odayı değiştirince sayfa yenilenir.</div>
+                        </div>
+                    </form>
+
+                    <form asp-action="Generate" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="RoomId" value="@selectedRoomId" />
+
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label">Satır</label>
+                                <input class="form-control" asp-for="Rows" min="1" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Satır başı</label>
+                                <input class="form-control" asp-for="SeatsPerRow" min="1" />
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-2">
+                            <label class="form-label">Bölüm (opsiyonel)</label>
+                            <input class="form-control" asp-for="Section" placeholder="örn. VIP" />
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="ReplaceExisting" />
+                            <label class="form-check-label" asp-for="ReplaceExisting">Mevcut koltukları sil ve yeniden oluştur</label>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Oluştur</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="card-title mb-0">Koltuklar</h5>
+                        <div class="small text-muted">Toplam: @seats.Count</div>
+                    </div>
+
+                    @if (selectedRoomId == Guid.Empty)
+                    {
+                        <div class="text-muted">Oda seçiniz.</div>
+                    }
+                    else if (seats.Count == 0)
+                    {
+                        <div class="alert alert-warning mb-0">Bu oda için koltuk düzeni yok.</div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Etiket</th>
+                                        <th>Bölüm</th>
+                                        <th>Satır</th>
+                                        <th>No</th>
+                                        <th>Durum</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var s in seats)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@s.Label</td>
+                                        <td>@(s.Section ?? "—")</td>
+                                        <td>@(s.Row ?? "—")</td>
+                                        <td>@(s.Number?.ToString() ?? "—")</td>
+                                        <td>
+                                            @if (s.IsActive)
+                                            {
+                                                <span class="badge bg-success">Aktif</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Pasif</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <form asp-action="SetActive" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="roomSeatId" value="@s.Id" />
+                                                <input type="hidden" name="roomId" value="@selectedRoomId" />
+                                                <input type="hidden" name="isActive" value="@(!s.IsActive)" />
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                    @(s.IsActive ? "Pasifleştir" : "Aktifleştir")
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
