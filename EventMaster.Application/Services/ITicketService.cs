@@ -7,6 +7,7 @@ public interface ITicketService
 {
     Task<TicketDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Result<PurchaseTicketsResultDto>> PurchaseAsync(PurchaseTicketRequest request, Guid buyerId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<TicketDto>> GetUserTicketsAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<TicketDto>> GetFinancialReportAsync(CancellationToken cancellationToken = default);
     Task<decimal> GetTotalRevenueAsync(CancellationToken cancellationToken = default);
 }

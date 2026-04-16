@@ -23,6 +23,7 @@
                             <li class="nav-item"><a class="nav-link" asp-controller="Event" asp-action="Index">Etkinlikler</a></li>
                             <li class="nav-item"><a class="nav-link" asp-controller="Room" asp-action="Index">Odalar</a></li>
                             <li class="nav-item"><a class="nav-link" asp-controller="Ticket" asp-action="Purchase">Bilet Al</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Ticket" asp-action="MyTickets">Biletlerim</a></li>
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item"><a class="nav-link" asp-controller="RoomSeat" asp-action="Index">Koltuk Düzeni</a></li>

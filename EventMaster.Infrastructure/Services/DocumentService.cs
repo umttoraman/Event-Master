@@ -53,6 +53,12 @@ public class DocumentService : IDocumentService
 
     public Task<Result<byte[]>> GenerateTicketPdfAsync(TicketDto ticket, CancellationToken cancellationToken = default)
     {
+        // Generate QR Code
+        var qrGenerator = new QRCoder.QRCodeGenerator();
+        var qrCodeData = qrGenerator.CreateQrCode(ticket.Id.ToString(), QRCoder.QRCodeGenerator.ECCLevel.Q);
+        var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
+        var qrCodeBytes = qrCode.GetGraphic(20);
+
         var pdf = Document.Create(container =>
         {
             container.Page(page =>
@@ -68,6 +74,7 @@ public class DocumentService : IDocumentService
                     c.Item().Text($"Alıcı: {ticket.BuyerName}");
                     c.Item().Text($"Satın alma: {ticket.PurchaseDate:u}");
                     c.Item().Text($"Bilet Id: {ticket.Id}");
+                    c.Item().Image(qrCodeBytes).FitWidth().FitHeight();
                 });
                 page.Footer().AlignRight().Text(t =>
                 {

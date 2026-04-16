@@ -81,6 +81,13 @@ public class TicketController : Controller
         return RedirectToAction(nameof(Purchase));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> MyTickets(CancellationToken cancellationToken)
+    {
+        var tickets = await _tickets.GetUserTicketsAsync(CurrentUserId, cancellationToken);
+        return View(tickets);
+    }
+
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Report(CancellationToken cancellationToken)
     {
@@ -106,5 +113,24 @@ public class TicketController : Controller
             return BadRequest(pdf.Error);
 
         return File(pdf.Value!, "application/pdf", $"bilet-{id:N}.pdf");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GenerateQrCode(Guid id, CancellationToken cancellationToken)
+    {
+        var ticket = await _tickets.GetByIdAsync(id, cancellationToken);
+        if (ticket is null)
+            return NotFound();
+
+        var isAdmin = User.IsInRole("Admin");
+        if (!isAdmin && ticket.UserId != CurrentUserId)
+            return Forbid();
+
+        var qrGenerator = new QRCoder.QRCodeGenerator();
+        var qrCodeData = qrGenerator.CreateQrCode(id.ToString(), QRCoder.QRCodeGenerator.ECCLevel.Q);
+        var qrCode = new QRCoder.PngByteQRCode(qrCodeData);
+        var qrCodeImage = qrCode.GetGraphic(20);
+
+        return File(qrCodeImage, "image/png", $"qr-{id:N}.png");
     }
 }

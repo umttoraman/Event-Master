@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vx4QyZH/+zU=",
+  "dgSpecHash": "myT+SJPcxlA=",
   "success": true,
-  "projectFilePath": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
+  "projectFilePath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alium\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.11\\microsoft.aspnetcore.cryptography.internal.8.0.11.nupkg.sha512",
     "C:\\Users\\alium\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\8.0.11\\microsoft.aspnetcore.cryptography.keyderivation.8.0.11.nupkg.sha512",
@@ -20,18 +20,21 @@
     "C:\\Users\\alium\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
     "C:\\Users\\alium\\.nuget\\packages\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
     "C:\\Users\\alium\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\alium\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\alium\\.nuget\\packages\\npgsql\\8.0.6\\npgsql.8.0.6.nupkg.sha512",
     "C:\\Users\\alium\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\8.0.11\\npgsql.entityframeworkcore.postgresql.8.0.11.nupkg.sha512",
-    "C:\\Users\\alium\\.nuget\\packages\\questpdf\\2024.10.3\\questpdf.2024.10.3.nupkg.sha512"
+    "C:\\Users\\alium\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
+    "C:\\Users\\alium\\.nuget\\packages\\questpdf\\2024.10.3\\questpdf.2024.10.3.nupkg.sha512",
+    "C:\\Users\\alium\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1603",
       "level": "Warning",
       "message": "EventMaster.Application depends on Microsoft.Extensions.DependencyInjection.Abstractions (>= 8.0.11) but Microsoft.Extensions.DependencyInjection.Abstractions 8.0.11 was not found. Microsoft.Extensions.DependencyInjection.Abstractions 9.0.0 was resolved instead.",
-      "projectPath": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
+      "projectPath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
       "warningLevel": 1,
-      "filePath": "c:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
+      "filePath": "C:\\Users\\alium\\Desktop\\web_ruhi\\EventMaster\\EventMaster.Infrastructure\\EventMaster.Infrastructure.csproj",
       "libraryId": "Microsoft.Extensions.DependencyInjection.Abstractions",
       "targetGraphs": [
         "net8.0"

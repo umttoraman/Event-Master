@@ -156,6 +156,30 @@ public class TicketService : ITicketService
         });
     }
 
+    public async Task<IReadOnlyList<TicketDto>> GetUserTicketsAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var tickets = await _u.Tickets.FindAsync(t => t.UserId == userId, cancellationToken);
+        var events = await _u.Events.GetWithDetailsAsync(cancellationToken);
+        var users = await _u.Users.GetAllAsync(cancellationToken);
+
+        return tickets.Select(t =>
+        {
+            var ev = events.FirstOrDefault(e => e.Id == t.EventId);
+            var u = users.FirstOrDefault(x => x.Id == t.UserId);
+            return new TicketDto
+            {
+                Id = t.Id,
+                Price = t.Price,
+                SeatNumber = t.SeatNumber,
+                PurchaseDate = t.PurchaseDate,
+                EventId = t.EventId,
+                EventTitle = ev?.Title ?? "",
+                UserId = t.UserId,
+                BuyerName = u?.Username ?? ""
+            };
+        }).OrderByDescending(t => t.PurchaseDate).ToList();
+    }
+
     public async Task<IReadOnlyList<TicketDto>> GetFinancialReportAsync(CancellationToken cancellationToken = default)
     {
         var tickets = await _u.Tickets.GetAllAsync(cancellationToken);
